@@ -23,19 +23,35 @@ class SongModel {
 	
 	public func getMasterTrackLength() -> Double{
 		if trackList.count > 0 {
-			return trackList[0].length
+			return trackList[0].length!
 		} else {
 			return -1
 		}
 	}
+	
+	public func getTrackAtIndex(indexOf: Int) -> Track {
+		return trackList[indexOf]
+	}
+	
+	public func getNumberOfTracks() -> Int {
+		return trackList.count
+	}
+	
+	public func addTrack(new: Track) {
+		self.trackList.append(new)
+	}
 }
 
 class Track {
-	var path: String
-	var length: Double
+	var path: URL
+	var length: Double?
 	
-	init (path: String, length: Double) {
+	init (path: URL, length: Double) {
 		self.path = path
 		self.length = length
+	}
+	
+	init (path: URL) {
+		self.path = path
 	}
 }

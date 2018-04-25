@@ -15,9 +15,14 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, UITableViewDele
     var audioRecorder:AVAudioRecorder!
     var audioPlayer:AVAudioPlayer!
     //Counter for how many recordings we have
-    var numberOfRecords:Int = 0
-    
-    @IBOutlet weak var recordButton: UIButton!
+    //var numberOfRecords:Int = 0
+	
+	var model: SongModel = SongModel()
+	var nextTrackId = 0
+	var currentlyRecordingTrack: Track?
+	
+	@IBOutlet weak var recordingProgress: UIProgressView!
+	@IBOutlet weak var recordButton: UIButton!
     @IBOutlet weak var trackListView: UITableView!
 	@IBOutlet weak var recordingView: UIView!
 	
@@ -31,9 +36,15 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, UITableViewDele
         //Check if we have an active recorder (if nil then record)
         if audioRecorder == nil {
             //Update total number of records
-            numberOfRecords += 1
+            //numberOfRecords += 1
             //Defines filename for new recording in m4a format
-            let filename = getDirectory().appendingPathComponent("\(numberOfRecords).m4a")
+            let filename = getDirectory().appendingPathComponent("musicapp\(nextTrackId).m4a")
+			nextTrackId += 1
+			if currentlyRecordingTrack == nil {
+				currentlyRecordingTrack = Track(path: filename)
+			} else {
+				print("started recording a track when currentlyRecordingTrack was not nil")
+			}
             //Recording settings
             let settings = [AVFormatIDKey: Int(kAudioFormatMPEG4AAC), AVSampleRateKey: 12000, AVNumberOfChannelsKey: 1, AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue]
             
@@ -55,13 +66,21 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, UITableViewDele
         }
         else {
             //Stopping audio recording if no active recorder
-            audioRecorder.stop()
-            audioRecorder = nil
-            //save after leaving app
-            UserDefaults.standard.set(numberOfRecords, forKey: "myNumber")
-            trackListView.reloadData()
-            
-            recordButton.setTitle("Start Recording", for: .normal)
+			if currentlyRecordingTrack != nil {
+            	audioRecorder.stop()
+            	audioRecorder = nil
+            	//save after leaving app
+            	UserDefaults.standard.set(model.getNumberOfTracks(), forKey: "myNumber")
+				let asset = AVURLAsset(URL: (currentlyRecordingTrack!.path), options: nil)
+				currentlyRecordingTrack.length = asset.duration
+				model.addTrack(new: currentlyRecordingTrack!)
+				currentlyRecordingTrack = nil
+            	trackListView.reloadData()
+				
+            	recordButton.setTitle("Start Recording", for: .normal)
+			} else {
+				print("Stopped recording when currentlyRecordingTrack was nil")
+			}
         }
     }
     
@@ -75,7 +94,8 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, UITableViewDele
         //if we have something in our user defaults then we set it as current value for number of records
         if let number:Int = UserDefaults.standard.object(forKey: "myNumber") as? Int
         {
-            numberOfRecords = number
+			// TODO not totally sure how we'll load in the old files w/ this method
+            // numberOfRecords = number
         }
         AVAudioSession.sharedInstance().requestRecordPermission { (hasPermission) in
             if hasPermission {
@@ -105,7 +125,7 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, UITableViewDele
     //Setting up table view
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return numberOfRecords
+        return model.getNumberOfTracks()
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
