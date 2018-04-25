@@ -13,6 +13,7 @@
 		696F8058207BE5310094342B /* finalProject.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 696F8056207BE5310094342B /* finalProject.xcdatamodeld */; };
 		696F805A207BE5310094342B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 696F8059207BE5310094342B /* Assets.xcassets */; };
 		696F805D207BE5310094342B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 696F805B207BE5310094342B /* LaunchScreen.storyboard */; };
+		7F00AD13208FFB790082039B /* SongModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F00AD12208FFB790082039B /* SongModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		696F8059207BE5310094342B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		696F805C207BE5310094342B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		696F805E207BE5310094342B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7F00AD12208FFB790082039B /* SongModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +61,7 @@
 				696F804F207BE5310094342B /* AppDelegate.swift */,
 				696F8051207BE5310094342B /* ViewController.swift */,
 				696F8053207BE5310094342B /* Main.storyboard */,
+				7F00AD12208FFB790082039B /* SongModel.swift */,
 				696F8059207BE5310094342B /* Assets.xcassets */,
 				696F805B207BE5310094342B /* LaunchScreen.storyboard */,
 				696F805E207BE5310094342B /* Info.plist */,
@@ -141,6 +144,7 @@
 			files = (
 				696F8052207BE5310094342B /* ViewController.swift in Sources */,
 				696F8058207BE5310094342B /* finalProject.xcdatamodeld in Sources */,
+				7F00AD13208FFB790082039B /* SongModel.swift in Sources */,
 				696F8050207BE5310094342B /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

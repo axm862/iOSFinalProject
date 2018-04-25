@@ -17,11 +17,15 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, UITableViewDele
     //Counter for how many recordings we have
     var numberOfRecords:Int = 0
     
-    @IBOutlet weak var buttonLabel: UIButton!
-    @IBOutlet weak var myTableView: UITableView!
-    
-    
-    
+    @IBOutlet weak var recordButton: UIButton!
+    @IBOutlet weak var trackListView: UITableView!
+	@IBOutlet weak var recordingView: UIView!
+	
+	@IBOutlet weak var playPauseButton: UIButton!
+	
+	@IBAction func tappedPlayPause(_ sender: UIButton) {
+	}
+	
     
     @IBAction func record(_ sender: Any) {
         //Check if we have an active recorder (if nil then record)
@@ -42,7 +46,7 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, UITableViewDele
                 
                 
                 
-                buttonLabel.setTitle("Stop Recording", for: .normal)
+                recordButton.setTitle("Stop Recording", for: .normal)
             }
             catch
             {
@@ -55,9 +59,9 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, UITableViewDele
             audioRecorder = nil
             //save after leaving app
             UserDefaults.standard.set(numberOfRecords, forKey: "myNumber")
-            myTableView.reloadData()
+            trackListView.reloadData()
             
-            buttonLabel.setTitle("Start Recording", for: .normal)
+            recordButton.setTitle("Start Recording", for: .normal)
         }
     }
     
