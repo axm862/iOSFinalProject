@@ -35,11 +35,13 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, UITableViewDele
     @IBAction func record(_ sender: Any) {
         //Check if we have an active recorder (if nil then record)
         if audioRecorder == nil {
-            //Update total number of records
-            //numberOfRecords += 1
             //Defines filename for new recording in m4a format
             let filename = getDirectory().appendingPathComponent("musicapp\(nextTrackId).m4a")
+			
+			// Use a separate ID tracker from the model to ensure unique filenames
 			nextTrackId += 1
+			
+			// If we weren't already recording, make a new track to record to
 			if currentlyRecordingTrack == nil {
 				currentlyRecordingTrack = Track(path: filename)
 			} else {
@@ -53,11 +55,22 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, UITableViewDele
             {
                 audioRecorder = try AVAudioRecorder(url: filename, settings: settings)
                 audioRecorder.delegate = self
-                audioRecorder.record()
-                
-                
-                
-                recordButton.setTitle("Stop Recording", for: .normal)
+				
+				// If there are no tracks, place no limit (or an arbitrary limit) on length
+				if model.getNumberOfTracks() == 0 {
+                	audioRecorder.record()
+					recordButton.setTitle("Stop Recording", for: .normal)
+				} else {
+					// If there's already a master track, don't allow recording for longer
+					audioRecorder.record(forDuration: TimeInterval(model.getMasterTrackLength()))
+					recordButton.setTitle("Recording...", for: .normal)
+					recordButton.isEnabled = false
+					
+					// Need to update the GUI when this track is done recording
+					DispatchQueue.main.asyncAfter(deadline: .now() + TimeInterval(model.getMasterTrackLength()), execute: {
+						self.recordingTimedOut()
+					})
+				}
             }
             catch
             {
@@ -66,24 +79,47 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, UITableViewDele
         }
         else {
             //Stopping audio recording if no active recorder
-			if currentlyRecordingTrack != nil {
-            	audioRecorder.stop()
-            	audioRecorder = nil
-            	//save after leaving app
-            	UserDefaults.standard.set(model.getNumberOfTracks(), forKey: "myNumber")
-				let asset = AVURLAsset(URL: (currentlyRecordingTrack!.path), options: nil)
-				currentlyRecordingTrack.length = asset.duration
-				model.addTrack(new: currentlyRecordingTrack!)
-				currentlyRecordingTrack = nil
-            	trackListView.reloadData()
-				
-            	recordButton.setTitle("Start Recording", for: .normal)
-			} else {
-				print("Stopped recording when currentlyRecordingTrack was nil")
-			}
+			finishRecording()
         }
     }
-    
+	
+	func finishRecording() {
+		if currentlyRecordingTrack != nil {
+			audioRecorder.stop()
+			audioRecorder = nil
+			//save after leaving app
+			UserDefaults.standard.set(model.getNumberOfTracks(), forKey: "myNumber")
+			
+			var asset: AVAudioFile?
+			
+			do {
+				try asset = AVAudioFile(forReading: currentlyRecordingTrack!.path)
+				
+			} catch {
+				// error handling
+				print("There was an error loading the asset from device memory!")
+			}
+			
+			if asset != nil {
+				currentlyRecordingTrack!.length = asset!.length
+			}
+			
+			model.addTrack(new: currentlyRecordingTrack!)
+			currentlyRecordingTrack = nil
+			trackListView.reloadData()
+			
+			recordButton.setTitle("Record New Track", for: .normal)
+		} else {
+			print("Stopped recording when currentlyRecordingTrack was nil")
+		}
+	}
+	
+	func recordingTimedOut() {
+		finishRecording()
+		recordButton.setTitle("Record New Track", for: .normal)
+		recordButton.isEnabled = true
+	}
+	
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.

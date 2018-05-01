@@ -21,7 +21,7 @@ class SongModel {
 		trackList.append(firstTrack)
 	}
 	
-	public func getMasterTrackLength() -> Double{
+	public func getMasterTrackLength() -> AVAudioFramePosition{
 		if trackList.count > 0 {
 			return trackList[0].length!
 		} else {
@@ -44,9 +44,9 @@ class SongModel {
 
 class Track {
 	var path: URL
-	var length: Double?
+	var length: AVAudioFramePosition?
 	
-	init (path: URL, length: Double) {
+	init (path: URL, length: AVAudioFramePosition) {
 		self.path = path
 		self.length = length
 	}
