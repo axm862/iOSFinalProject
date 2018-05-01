@@ -28,15 +28,28 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, UITableViewDele
 	
 	@IBOutlet weak var playPauseButton: UIButton!
 	
+	var playerList: [AVAudioPlayer] = []
+	
 	@IBAction func tappedPlayPause(_ sender: UIButton) {
+		print("playing all tracks simultaneously")
+		do {
+			for t in model.trackList {
+				let myaudioPlayer = try AVAudioPlayer(contentsOf: t.path)
+				playerList.append(myaudioPlayer)
+				myaudioPlayer.play()
+			}
+		} catch {
+			displayAlert(title: "Oops!", message: "Playback Failed")
+		}
 	}
 	
-    
+    let sessionId = arc4random()
+	
     @IBAction func record(_ sender: Any) {
         //Check if we have an active recorder (if nil then record)
         if audioRecorder == nil {
             //Defines filename for new recording in m4a format
-            let filename = getDirectory().appendingPathComponent("musicapp\(nextTrackId).m4a")
+            let filename = getDirectory().appendingPathComponent("musicapp\(sessionId)\(nextTrackId).m4a")
 			
 			// Use a separate ID tracker from the model to ensure unique filenames
 			nextTrackId += 1
@@ -67,7 +80,8 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, UITableViewDele
 					recordButton.isEnabled = false
 					
 					// Need to update the GUI when this track is done recording
-					DispatchQueue.main.asyncAfter(deadline: .now() + TimeInterval(model.getMasterTrackLength()), execute: {
+					print("Calling recordingTimedOut in \(TimeInterval(model.getMasterTrackLength()) * 0.0001)")
+					DispatchQueue.main.asyncAfter(deadline: .now() + TimeInterval(model.getMasterTrackLength()) * 0.0001, execute: {
 						self.recordingTimedOut()
 					})
 				}
@@ -173,7 +187,7 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, UITableViewDele
     //listen to recordings
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         //get path for audio recording
-        let path = getDirectory().appendingPathComponent("\(indexPath.row + 1).m4a")
+        let path = getDirectory().appendingPathComponent("musicapp\(sessionId)\(indexPath.row + 1).m4a")
         //play recording
         do
         {
