@@ -46,18 +46,9 @@
                                                     <action selector="tapShare:" destination="BYZ-38-t0r" eventType="touchUpInside" id="gsT-cf-ffL"/>
                                                 </connections>
                                             </button>
-                                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="IWJ-ec-0tl">
-                                                <rect key="frame" x="8" y="80" width="221" height="2"/>
+                                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="IWJ-ec-0tl">
+                                                <rect key="frame" x="8" y="80" width="243" height="2"/>
                                             </progressView>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0.00" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yX1-Gh-KUq">
-                                                <rect key="frame" x="237" y="70.5" width="75" height="20.5"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="width" constant="75" id="RhI-bj-9CM"/>
-                                                </constraints>
-                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                <nil key="textColor"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xir-Lf-GZi">
                                                 <rect key="frame" x="8" y="25" width="40" height="40"/>
                                                 <constraints>
@@ -69,9 +60,19 @@
                                                     <action selector="record:" destination="BYZ-38-t0r" eventType="touchUpInside" id="zAx-28-Ewg"/>
                                                 </connections>
                                             </button>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0.00" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yX1-Gh-KUq">
+                                                <rect key="frame" x="244" y="71.5" width="68" height="20.5"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="68" id="RhI-bj-9CM"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
                                         </subviews>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
+                                            <constraint firstAttribute="trailing" secondItem="yX1-Gh-KUq" secondAttribute="trailing" constant="8" id="5us-nh-0Fk"/>
                                             <constraint firstItem="yX1-Gh-KUq" firstAttribute="trailing" secondItem="kvo-a3-ebn" secondAttribute="trailing" id="AcS-39-OkA"/>
                                             <constraint firstItem="h1z-FB-61B" firstAttribute="leading" secondItem="xir-Lf-GZi" secondAttribute="trailing" constant="40" id="CeG-gO-Hv2"/>
                                             <constraint firstItem="yX1-Gh-KUq" firstAttribute="centerY" secondItem="IWJ-ec-0tl" secondAttribute="centerY" id="Ddi-JZ-v3a"/>

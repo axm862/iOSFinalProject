@@ -391,7 +391,7 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, UITableViewDele
 			self.present(vc, animated: true)
 		}
 		*/
-		let activityViewController: UIActivityViewController = UIActivityViewController(activityItems: [output], applicationActivities:nil)
+		let activityViewController: UIActivityViewController = UIActivityViewController(activityItems: ["teststring"], applicationActivities:nil)
 		//activityViewController.excludedActivityTypes = [.print, .copyToPasteboard, .assignToContact, .saveToCameraRoll, .airDrop]
 		
 		DispatchQueue.main.async {
