@@ -5,7 +5,6 @@
 //  Created by Nathan Walls on 4/24/18.
 //  Copyright © 2018 Malik and Walls. All rights reserved.
 //
-
 import Foundation
 import AVFoundation
 
@@ -21,7 +20,7 @@ class SongModel {
 		trackList.append(firstTrack)
 	}
 	
-	public func getMasterTrackLength() -> Double{
+	public func getMasterTrackLength() -> AVAudioFramePosition{
 		if trackList.count > 0 {
 			return trackList[0].length!
 		} else {
@@ -44,9 +43,9 @@ class SongModel {
 
 class Track {
 	var path: URL
-	var length: Double?
+	var length: AVAudioFramePosition?
 	
-	init (path: URL, length: Double) {
+	init (path: URL, length: AVAudioFramePosition) {
 		self.path = path
 		self.length = length
 	}
