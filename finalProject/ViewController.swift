@@ -59,12 +59,14 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, UITableViewDele
 	var timeStartedRecording = Date()
 	
 	@objc func countSeconds() {
-		if model.trackList.count == 0 {
+		if model.trackList.count == 0 && isRecordingTrackOne {
 			timeLabel.text = "\(-1 * timeStartedRecording.timeIntervalSinceNow)"
 			let myindex = timeLabel.text!.index(timeLabel.text!.startIndex, offsetBy: 4)
 			timeLabel.text = "\(timeLabel.text![..<myindex])"
 		}
 	}
+	
+	var isRecordingTrackOne = false
 	
 	@IBAction func record(_ sender: Any) {
 		//Check if we have an active recorder (if nil then record)
@@ -93,6 +95,7 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, UITableViewDele
 				
 				// If there are no tracks, place no limit (or an arbitrary limit) on length
 				if model.getNumberOfTracks() == 0 {
+					isRecordingTrackOne = true
 					audioRecorder.record()
 
 					// Call function to update the time label
@@ -101,6 +104,7 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, UITableViewDele
 					
 					//recordButton.setTitle("Stop Recording", for: .normal)
 				} else {
+					isRecordingTrackOne = false
 					// If there's already a master track, don't allow recording for longer
 					audioRecorder.record(forDuration: TimeInterval(model.getMasterTrackLength()))
 					// Play previous tracks in background while recording the new track
@@ -158,6 +162,7 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, UITableViewDele
 	// function that wraps up recording, e.g. sets path field in our data model
 	func finishRecording() {
 		if currentlyRecordingTrack != nil {
+			isRecordingTrackOne = false
 			audioRecorder.stop()
 			audioRecorder = nil
 			//save after leaving app
@@ -268,6 +273,9 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, UITableViewDele
 		if editingStyle == .delete {
 			print("Deleting a row")
 			model.trackList.remove(at: indexPath.row)
+			
+			timeStartedRecording = Date()
+			
 			tableView.deleteRows(at: [indexPath], with: .fade)
 		} else if editingStyle == .insert {
 			// Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
@@ -391,7 +399,7 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, UITableViewDele
 			self.present(vc, animated: true)
 		}
 		*/
-		let activityViewController: UIActivityViewController = UIActivityViewController(activityItems: ["teststring"], applicationActivities:nil)
+		let activityViewController: UIActivityViewController = UIActivityViewController(activityItems: [output], applicationActivities:nil)
 		//activityViewController.excludedActivityTypes = [.print, .copyToPasteboard, .assignToContact, .saveToCameraRoll, .airDrop]
 		
 		DispatchQueue.main.async {
