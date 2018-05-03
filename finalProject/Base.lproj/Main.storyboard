@@ -26,17 +26,27 @@
                                         <rect key="frame" x="0.0" y="0.0" width="320" height="74"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xir-Lf-GZi">
-                                                <rect key="frame" x="0.0" y="0.0" width="320" height="30"/>
+                                                <rect key="frame" x="0.0" y="14" width="320" height="18"/>
                                                 <state key="normal" title="Start Recording"/>
                                                 <connections>
                                                     <action selector="record:" destination="BYZ-38-t0r" eventType="touchUpInside" id="zAx-28-Ewg"/>
                                                 </connections>
                                             </button>
-                                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="IWJ-ec-0tl">
-                                                <rect key="frame" x="8" y="52" width="312" height="2"/>
+                                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" misplaced="YES" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="IWJ-ec-0tl">
+                                                <rect key="frame" x="8" y="42" width="312" height="0.0"/>
                                             </progressView>
+                                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kvo-a3-ebn">
+                                                <rect key="frame" x="234.5" y="42" width="61" height="39"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="61" id="YfH-10-gd0"/>
+                                                </constraints>
+                                                <state key="normal" title="Share"/>
+                                                <connections>
+                                                    <action selector="tapShare:" destination="BYZ-38-t0r" eventType="touchUpInside" id="gsT-cf-ffL"/>
+                                                </connections>
+                                            </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="h1z-FB-61B">
-                                                <rect key="frame" x="129" y="50" width="61" height="41"/>
+                                                <rect key="frame" x="129.5" y="52" width="61" height="39"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="61" id="WgM-mc-K5W"/>
                                                 </constraints>
@@ -49,11 +59,12 @@
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
                                             <constraint firstItem="xir-Lf-GZi" firstAttribute="leading" secondItem="2l4-To-wAp" secondAttribute="leading" id="0cv-9B-RpA"/>
+                                            <constraint firstItem="kvo-a3-ebn" firstAttribute="leading" secondItem="h1z-FB-61B" secondAttribute="trailing" constant="44" id="14W-kY-yeh"/>
                                             <constraint firstItem="xir-Lf-GZi" firstAttribute="trailing" secondItem="IWJ-ec-0tl" secondAttribute="trailing" id="7fX-NT-tbM"/>
                                             <constraint firstItem="IWJ-ec-0tl" firstAttribute="top" secondItem="xir-Lf-GZi" secondAttribute="bottom" constant="22" id="DwG-z6-mIQ"/>
                                             <constraint firstItem="xir-Lf-GZi" firstAttribute="centerX" secondItem="h1z-FB-61B" secondAttribute="centerX" id="GCN-9k-CmF"/>
                                             <constraint firstItem="h1z-FB-61B" firstAttribute="top" secondItem="xir-Lf-GZi" secondAttribute="bottom" constant="20" id="OcX-eb-WYR"/>
-                                            <constraint firstItem="xir-Lf-GZi" firstAttribute="top" secondItem="2l4-To-wAp" secondAttribute="top" id="U3v-Mq-krL"/>
+                                            <constraint firstItem="xir-Lf-GZi" firstAttribute="top" secondItem="2l4-To-wAp" secondAttribute="top" constant="14" id="U3v-Mq-krL"/>
                                             <constraint firstItem="IWJ-ec-0tl" firstAttribute="leading" secondItem="2l4-To-wAp" secondAttribute="leadingMargin" id="X6a-cT-D6j"/>
                                             <constraint firstAttribute="trailing" secondItem="xir-Lf-GZi" secondAttribute="trailing" id="cq3-I3-Fte"/>
                                             <constraint firstAttribute="bottom" secondItem="h1z-FB-61B" secondAttribute="bottom" constant="-17" id="iVj-IT-01J"/>

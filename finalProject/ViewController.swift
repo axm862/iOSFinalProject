@@ -16,6 +16,10 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, UITableViewDele
 	//Counter for how many recordings we have
 	//var numberOfRecords:Int = 0
 	
+	@IBAction func tapShare(_ sender: UIButton) {
+		mergeAudioFiles()
+	}
+	
 	var model: SongModel = SongModel()
 	var nextTrackId = 0
 	var currentlyRecordingTrack: Track?
@@ -183,7 +187,7 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, UITableViewDele
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-		cell.textLabel?.text = String(indexPath.row + 1)
+		cell.textLabel?.text = String("Track \(indexPath.row + 1)")
 		return cell
 	}
 	
@@ -206,6 +210,44 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, UITableViewDele
 	override func didReceiveMemoryWarning() {
 		super.didReceiveMemoryWarning()
 		// Dispose of any resources that can be recreated.
+	}
+	
+
+	
+	func mergeAudioFiles() {
+		let composition = AVMutableComposition()
+		let compositionAudioTrack = composition.addMutableTrack(withMediaType: AVMediaType.audio, preferredTrackID: kCMPersistentTrackID_Invalid)
+		
+		for t in model.trackList {
+			compositionAudioTrack!.append(url: t.path)
+		}
+		
+		if let assetExport = AVAssetExportSession(asset: composition, presetName: AVAssetExportPresetPassthrough) {
+			assetExport.outputFileType = AVFileType.m4a
+			assetExport.outputURL = getDirectory().appendingPathComponent("\(sessionId)-Final.m4a")
+			var myaudioplayer: AVAudioPlayer?
+			/*assetExport.exportAsynchronously(completionHandler:{
+			print("starting async callback")
+			myaudioplayer = try AVAudioPlayer(contentsOf: self.getDirectory().appendingPathComponent("\(self.sessionId)-Final.wav"))
+			myaudioplayer!.play()
+			print("finished async callback")
+				} as! () -> Void)*/
+			assetExport.exportAsynchronously(completionHandler:{self.handleFinishExport()})
+		}
+	}
+	
+	func handleFinishExport() {
+		print("starting async callback")
+		do
+		{
+			audioPlayer = try AVAudioPlayer(contentsOf: getDirectory().appendingPathComponent("\(sessionId)-Final.wav"))
+			audioPlayer.play()
+		}
+		catch
+		{
+			displayAlert(title: "Oops!", message: "Playback Failed for Exported Song")
+		}
+		print("finished async callback")
 	}
 	
 }
