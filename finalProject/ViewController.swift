@@ -27,8 +27,8 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, UITableViewDele
 	
 	@IBOutlet weak var recordingProgress: UIProgressView!
 	@IBOutlet weak var recordButton: UIButton!
-	@IBOutlet weak var trackListView: UITableView!
 	@IBOutlet weak var recordingView: UIView!
+	@IBOutlet weak var trackListView: UITableView!
 	
 	@IBOutlet weak var playPauseButton: UIButton!
 	
@@ -262,31 +262,19 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, UITableViewDele
 			displayAlert(title: "Oops!", message: "Playback Failed")
 		}
 	}
-	/*
-	// Delete a track
-	func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-		return true
+	
+	// Delete a row
+	func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+		if editingStyle == .delete {
+			print("Deleting a row")
+			model.trackList.remove(at: indexPath.row)
+			tableView.deleteRows(at: [indexPath], with: .fade)
+		} else if editingStyle == .insert {
+			// Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
+		}
 	}
 	
-	func tableView(tableView: (UITableView!), commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: (NSIndexPath!)) {
-		
-	}
 	
-	func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
-		
-		var deleteAction = UITableViewRowAction(style: .default, title: "Delete") {_,_ in
-			//handle delete
-			print("Did delete action")
-		}
-		
-		var editAction = UITableViewRowAction(style: .normal, title: "Edit") {_,_ in
-			//handle edit
-			print("Did edit action")
-		}
-		
-		return [deleteAction, editAction]
-	}
-	*/
 	override func didReceiveMemoryWarning() {
 		super.didReceiveMemoryWarning()
 		// Dispose of any resources that can be recreated.
@@ -344,25 +332,6 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, UITableViewDele
 			
 		}
 		
-		/*
-		let url1 = audio1
-		let url2 = audio2
-		
-		let avAsset1 = AVURLAsset(url: url1 as URL, options: nil)
-		let avAsset2 = AVURLAsset(url: url2 as URL, options: nil)
-		
-		var tracks1 = avAsset1.tracks(withMediaType: AVMediaType.audio)
-		var tracks2 = avAsset2.tracks(withMediaType: AVMediaType.audio)
-		
-		let assetTrack1:AVAssetTrack = tracks1[0]
-		let assetTrack2:AVAssetTrack = tracks2[0]
-		
-		let duration1: CMTime = assetTrack1.timeRange.duration
-		let duration2: CMTime = assetTrack2.timeRange.duration
-		
-		let timeRange1 = CMTimeRangeMake(kCMTimeZero, duration1)
-		let timeRange2 = CMTimeRangeMake(kCMTimeZero, duration2)
-		*/
 		var compList: [AVMutableCompositionTrack] = []
 		do
 		{
@@ -405,36 +374,29 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, UITableViewDele
 					print("exporting\(assetExport?.error)")
 				default:
 					print("complete")
-				}
-				
-				do
-				{
-					/*
-					This code plays the exported file when it's finished
-					self.audioPlayer = try AVAudioPlayer(contentsOf: self.fileDestinationUrl!)
-					self.audioPlayer?.numberOfLoops = 0
-					self.audioPlayer?.prepareToPlay()
-					self.audioPlayer?.volume = 1.0
-					self.audioPlayer?.play()
-					// self.audioPlayer?.delegate=self
-					*/
-					
 					self.presentShareScreen()
-					
 				}
-				catch let error as NSError
-				{
-					print(error)
-				}
+			
 		})
 	}
 	
-	func presentShareScreen() {
+	@objc func presentShareScreen() {
 		print("About to attempt to present share screen")
+		
 		let output = AVURLAsset(url: self.fileDestinationUrl!, options: nil)
-		let testString = "This is a test string"
-		let vc = UIActivityViewController(activityItems: [testString], applicationActivities: [])
-		present(vc, animated: true)
+		/*
+		let testString = ["This is a test string", output] as [Any]
+		let vc = UIActivityViewController(activityItems: testString, applicationActivities: [])
+		DispatchQueue.main.async {
+			self.present(vc, animated: true)
+		}
+		*/
+		let activityViewController: UIActivityViewController = UIActivityViewController(activityItems: [output], applicationActivities:nil)
+		//activityViewController.excludedActivityTypes = [.print, .copyToPasteboard, .assignToContact, .saveToCameraRoll, .airDrop]
+		
+		DispatchQueue.main.async {
+			self.present(activityViewController, animated: true, completion: nil);
+		}
 		// getting this error:
 		// finalProject[13151:635117] [ShareSheet] ERROR: <UIActivityViewController: 0x7fa42703e000> timed out waiting to establish a connection to the ShareUI view service extension.
 		
