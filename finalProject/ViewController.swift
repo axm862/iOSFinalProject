@@ -19,6 +19,7 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, UITableViewDele
 	@IBAction func tapShare(_ sender: UIButton) {
 		playmerge()
 	}
+	@IBOutlet weak var timeLabel: UILabel!
 	
 	var model: SongModel = SongModel()
 	var nextTrackId = 0
@@ -34,7 +35,11 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, UITableViewDele
 	var playerList: [AVAudioPlayer] = []
 	
 	@IBAction func tappedPlayPause(_ sender: UIButton) {
-		print("playing all tracks simultaneously")
+		playAll()
+	}
+	
+	func playAll() {
+		playerList = []
 		do {
 			for t in model.trackList {
 				let myaudioPlayer = try AVAudioPlayer(contentsOf: t.path)
@@ -46,14 +51,26 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, UITableViewDele
 		}
 	}
 	
-
+	// Save files to 'unique' name every time
 	let sessionId = arc4random()
+	
+	// Timer for updating progress bar
+	var timer = Timer()
+	var timeStartedRecording = Date()
+	
+	@objc func countSeconds() {
+		if model.trackList.count == 0 {
+			timeLabel.text = "\(-1 * timeStartedRecording.timeIntervalSinceNow)"
+			let myindex = timeLabel.text!.index(timeLabel.text!.startIndex, offsetBy: 4)
+			timeLabel.text = "\(timeLabel.text![..<myindex])"
+		}
+	}
 	
 	@IBAction func record(_ sender: Any) {
 		//Check if we have an active recorder (if nil then record)
 		if audioRecorder == nil {
 			//Defines filename for new recording in m4a format
-			let filename = getDirectory().appendingPathComponent("musicapp\(sessionId)\(nextTrackId).m4a")
+			let filename = getDirectory().appendingPathComponent("musicapp\(sessionId)-\(nextTrackId).m4a")
 			
 			// Use a separate ID tracker from the model to ensure unique filenames
 			nextTrackId += 1
@@ -78,11 +95,16 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, UITableViewDele
 				if model.getNumberOfTracks() == 0 {
 					audioRecorder.record()
 
-					recordButton.setTitle("Stop Recording", for: .normal)
+					// Call function to update the time label
+					timeStartedRecording = Date()
+					timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(ViewController.countSeconds), userInfo: nil, repeats: true)
+					
+					//recordButton.setTitle("Stop Recording", for: .normal)
 				} else {
 					// If there's already a master track, don't allow recording for longer
 					audioRecorder.record(forDuration: TimeInterval(model.getMasterTrackLength()))
-					recordButton.setTitle("Recording...", for: .normal)
+					// Play previous tracks in background while recording the new track
+					playAll()
 					recordButton.isEnabled = false
 					
 					// Need to update the GUI when this track is done recording
@@ -91,7 +113,10 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, UITableViewDele
 						self.recordingTimedOut()
 					})
 				}
-
+				
+				// Set up timer to continually update progress bar
+				timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(ViewController.setProgressBar), userInfo: nil, repeats: true)
+				timeStartedRecording = Date()
 			}
 			catch
 			{
@@ -104,6 +129,33 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, UITableViewDele
 		}
 	}
 	
+	
+	// Function to calculate what value the progress bar should have
+	// This is called every .1 seconds after tapping record
+	@objc func setProgressBar() {
+		if audioRecorder == nil {
+			recordingProgress.progress = 0.0
+		} else {
+			if model.getNumberOfTracks() == 0 {
+				recordingProgress.progress = 0.0
+			} else {
+				//let totalLength = model.getMasterTrackLength()
+				var val = -1 * Float(timeStartedRecording.timeIntervalSinceNow / (TimeInterval(model.getMasterTrackLength()) * 0.0001))
+				if val > 1 {
+					val = 1.0
+				}
+				recordingProgress.progress = val
+				
+				
+				timeLabel.text = "\(Double(val) * (TimeInterval(model.getMasterTrackLength()) * 0.0001))"
+			
+				let myindex = timeLabel.text!.index(timeLabel.text!.startIndex, offsetBy: 4)
+				timeLabel.text = "\(timeLabel.text![..<myindex])"
+			}
+		}
+	}
+	
+	// function that wraps up recording, e.g. sets path field in our data model
 	func finishRecording() {
 		if currentlyRecordingTrack != nil {
 			audioRecorder.stop()
@@ -129,7 +181,6 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, UITableViewDele
 			currentlyRecordingTrack = nil
 			trackListView.reloadData()
 			
-			recordButton.setTitle("Record New Track", for: .normal)
 		} else {
 			print("Stopped recording when currentlyRecordingTrack was nil")
 		}
@@ -137,7 +188,7 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, UITableViewDele
 	
 	func recordingTimedOut() {
 		finishRecording()
-		recordButton.setTitle("Record New Track", for: .normal)
+		//recordButton.setTitle("Record New Track", for: .normal)
 		recordButton.isEnabled = true
 	}
 	
@@ -188,13 +239,18 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, UITableViewDele
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
 		cell.textLabel?.text = String("Track \(indexPath.row + 1)")
+		if(indexPath.row%2 == 0) {
+			cell.backgroundColor = UIColor(red:0.83, green:0.96, blue:0.95, alpha:1.0)
+		} else {
+			cell.backgroundColor = UIColor(red:0.96, green:0.83, blue:0.83, alpha:1.0)
+		}
 		return cell
 	}
 	
 	//listen to recordings
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		//get path for audio recording
-		let path = getDirectory().appendingPathComponent("musicapp\(sessionId)\(indexPath.row + 1).m4a")
+		let path = getDirectory().appendingPathComponent("musicapp\(sessionId)-\(indexPath.row + 1).m4a")
 		//play recording
 		do
 		{
@@ -206,7 +262,31 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, UITableViewDele
 			displayAlert(title: "Oops!", message: "Playback Failed")
 		}
 	}
+	/*
+	// Delete a track
+	func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+		return true
+	}
 	
+	func tableView(tableView: (UITableView!), commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: (NSIndexPath!)) {
+		
+	}
+	
+	func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
+		
+		var deleteAction = UITableViewRowAction(style: .default, title: "Delete") {_,_ in
+			//handle delete
+			print("Did delete action")
+		}
+		
+		var editAction = UITableViewRowAction(style: .normal, title: "Edit") {_,_ in
+			//handle edit
+			print("Did edit action")
+		}
+		
+		return [deleteAction, editAction]
+	}
+	*/
 	override func didReceiveMemoryWarning() {
 		super.didReceiveMemoryWarning()
 		// Dispose of any resources that can be recreated.
@@ -329,18 +409,36 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, UITableViewDele
 				
 				do
 				{
+					/*
+					This code plays the exported file when it's finished
 					self.audioPlayer = try AVAudioPlayer(contentsOf: self.fileDestinationUrl!)
 					self.audioPlayer?.numberOfLoops = 0
 					self.audioPlayer?.prepareToPlay()
 					self.audioPlayer?.volume = 1.0
 					self.audioPlayer?.play()
 					// self.audioPlayer?.delegate=self
+					*/
+					
+					self.presentShareScreen()
+					
 				}
 				catch let error as NSError
 				{
 					print(error)
 				}
 		})
+	}
+	
+	func presentShareScreen() {
+		print("About to attempt to present share screen")
+		let output = AVURLAsset(url: self.fileDestinationUrl!, options: nil)
+		let testString = "This is a test string"
+		let vc = UIActivityViewController(activityItems: [testString], applicationActivities: [])
+		present(vc, animated: true)
+		// getting this error:
+		// finalProject[13151:635117] [ShareSheet] ERROR: <UIActivityViewController: 0x7fa42703e000> timed out waiting to establish a connection to the ShareUI view service extension.
+		
+		
 	}
 	
 }
