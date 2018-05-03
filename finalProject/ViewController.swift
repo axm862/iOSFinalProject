@@ -255,7 +255,8 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, UITableViewDele
 	//listen to recordings
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		//get path for audio recording
-		let path = getDirectory().appendingPathComponent("musicapp\(sessionId)-\(indexPath.row + 1).m4a")
+		//let path = getDirectory().appendingPathComponent("musicapp\(sessionId)-\(indexPath.row + 1).m4a")
+		let path = model.getTrackAtIndex(indexOf: indexPath.row).path
 		//play recording
 		do
 		{
