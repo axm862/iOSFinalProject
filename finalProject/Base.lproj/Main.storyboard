@@ -23,20 +23,21 @@
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="610"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2l4-To-wAp">
-                                        <rect key="frame" x="0.0" y="0.0" width="320" height="74"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="320" height="95"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xir-Lf-GZi">
-                                                <rect key="frame" x="0.0" y="14" width="320" height="18"/>
-                                                <state key="normal" title="Start Recording"/>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="h1z-FB-61B">
+                                                <rect key="frame" x="88" y="25" width="40" height="40"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="40" id="M6U-1s-SPJ"/>
+                                                    <constraint firstAttribute="height" constant="40" id="oQK-yC-suR"/>
+                                                </constraints>
+                                                <state key="normal" backgroundImage="Play"/>
                                                 <connections>
-                                                    <action selector="record:" destination="BYZ-38-t0r" eventType="touchUpInside" id="zAx-28-Ewg"/>
+                                                    <action selector="tappedPlayPause:" destination="BYZ-38-t0r" eventType="touchUpInside" id="LhV-8U-Soc"/>
                                                 </connections>
                                             </button>
-                                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" misplaced="YES" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="IWJ-ec-0tl">
-                                                <rect key="frame" x="8" y="42" width="312" height="0.0"/>
-                                            </progressView>
-                                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kvo-a3-ebn">
-                                                <rect key="frame" x="234.5" y="42" width="61" height="39"/>
+                                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kvo-a3-ebn">
+                                                <rect key="frame" x="251" y="9" width="61" height="40"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="61" id="YfH-10-gd0"/>
                                                 </constraints>
@@ -45,34 +46,35 @@
                                                     <action selector="tapShare:" destination="BYZ-38-t0r" eventType="touchUpInside" id="gsT-cf-ffL"/>
                                                 </connections>
                                             </button>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="h1z-FB-61B">
-                                                <rect key="frame" x="129.5" y="52" width="61" height="39"/>
+                                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" ambiguous="YES" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="IWJ-ec-0tl">
+                                                <rect key="frame" x="8" y="80" width="304" height="0.0"/>
+                                            </progressView>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xir-Lf-GZi">
+                                                <rect key="frame" x="8" y="25" width="40" height="40"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="width" constant="61" id="WgM-mc-K5W"/>
+                                                    <constraint firstAttribute="width" constant="40" id="NIQ-VK-Z8b"/>
+                                                    <constraint firstAttribute="height" constant="40" id="hxx-JN-FQa"/>
                                                 </constraints>
-                                                <state key="normal" title="Play"/>
+                                                <state key="normal" backgroundImage="Record"/>
                                                 <connections>
-                                                    <action selector="tappedPlayPause:" destination="BYZ-38-t0r" eventType="touchUpInside" id="LhV-8U-Soc"/>
+                                                    <action selector="record:" destination="BYZ-38-t0r" eventType="touchUpInside" id="zAx-28-Ewg"/>
                                                 </connections>
                                             </button>
                                         </subviews>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
-                                            <constraint firstItem="xir-Lf-GZi" firstAttribute="leading" secondItem="2l4-To-wAp" secondAttribute="leading" id="0cv-9B-RpA"/>
-                                            <constraint firstItem="kvo-a3-ebn" firstAttribute="leading" secondItem="h1z-FB-61B" secondAttribute="trailing" constant="44" id="14W-kY-yeh"/>
-                                            <constraint firstItem="xir-Lf-GZi" firstAttribute="trailing" secondItem="IWJ-ec-0tl" secondAttribute="trailing" id="7fX-NT-tbM"/>
-                                            <constraint firstItem="IWJ-ec-0tl" firstAttribute="top" secondItem="xir-Lf-GZi" secondAttribute="bottom" constant="22" id="DwG-z6-mIQ"/>
-                                            <constraint firstItem="xir-Lf-GZi" firstAttribute="centerX" secondItem="h1z-FB-61B" secondAttribute="centerX" id="GCN-9k-CmF"/>
-                                            <constraint firstItem="h1z-FB-61B" firstAttribute="top" secondItem="xir-Lf-GZi" secondAttribute="bottom" constant="20" id="OcX-eb-WYR"/>
-                                            <constraint firstItem="xir-Lf-GZi" firstAttribute="top" secondItem="2l4-To-wAp" secondAttribute="top" constant="14" id="U3v-Mq-krL"/>
-                                            <constraint firstItem="IWJ-ec-0tl" firstAttribute="leading" secondItem="2l4-To-wAp" secondAttribute="leadingMargin" id="X6a-cT-D6j"/>
-                                            <constraint firstAttribute="trailing" secondItem="xir-Lf-GZi" secondAttribute="trailing" id="cq3-I3-Fte"/>
-                                            <constraint firstAttribute="bottom" secondItem="h1z-FB-61B" secondAttribute="bottom" constant="-17" id="iVj-IT-01J"/>
-                                            <constraint firstAttribute="bottom" secondItem="IWJ-ec-0tl" secondAttribute="bottom" constant="20" id="pPv-FE-SbI"/>
+                                            <constraint firstItem="h1z-FB-61B" firstAttribute="leading" secondItem="xir-Lf-GZi" secondAttribute="trailing" constant="40" id="CeG-gO-Hv2"/>
+                                            <constraint firstItem="xir-Lf-GZi" firstAttribute="top" secondItem="2l4-To-wAp" secondAttribute="top" constant="25" id="GZF-DP-504"/>
+                                            <constraint firstItem="h1z-FB-61B" firstAttribute="top" secondItem="2l4-To-wAp" secondAttribute="top" constant="25" id="HTx-bV-898"/>
+                                            <constraint firstItem="IWJ-ec-0tl" firstAttribute="top" secondItem="xir-Lf-GZi" secondAttribute="bottom" constant="15" id="Naa-SX-nl7"/>
+                                            <constraint firstAttribute="bottom" secondItem="IWJ-ec-0tl" secondAttribute="bottom" constant="15" id="Nk6-qq-MmI"/>
+                                            <constraint firstAttribute="trailing" secondItem="kvo-a3-ebn" secondAttribute="trailing" constant="8" id="YeZ-0F-WPb"/>
+                                            <constraint firstItem="kvo-a3-ebn" firstAttribute="top" secondItem="2l4-To-wAp" secondAttribute="top" constant="25" id="iBU-go-dVl"/>
+                                            <constraint firstItem="xir-Lf-GZi" firstAttribute="leading" secondItem="2l4-To-wAp" secondAttribute="leading" constant="8" id="ugD-xf-WsJ"/>
                                         </constraints>
                                     </view>
                                     <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="E0B-d4-qHC">
-                                        <rect key="frame" x="0.0" y="74" width="320" height="536"/>
+                                        <rect key="frame" x="0.0" y="95" width="320" height="515"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <prototypes>
                                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="cell" id="hEF-Qf-DpX">
@@ -114,4 +116,8 @@
             <point key="canvasLocation" x="135" y="132.04225352112675"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="Play" width="512" height="512"/>
+        <image name="Record" width="630" height="630"/>
+    </resources>
 </document>

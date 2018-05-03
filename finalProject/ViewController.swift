@@ -17,7 +17,7 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, UITableViewDele
 	//var numberOfRecords:Int = 0
 	
 	@IBAction func tapShare(_ sender: UIButton) {
-		mergeAudioFiles()
+		playmerge()
 	}
 	
 	var model: SongModel = SongModel()
@@ -213,29 +213,6 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, UITableViewDele
 	}
 	
 
-	
-	func mergeAudioFiles() {
-		let composition = AVMutableComposition()
-		let compositionAudioTrack = composition.addMutableTrack(withMediaType: AVMediaType.audio, preferredTrackID: kCMPersistentTrackID_Invalid)
-		
-		for t in model.trackList {
-			compositionAudioTrack!.append(url: t.path)
-		}
-		
-		if let assetExport = AVAssetExportSession(asset: composition, presetName: AVAssetExportPresetPassthrough) {
-			assetExport.outputFileType = AVFileType.m4a
-			assetExport.outputURL = getDirectory().appendingPathComponent("\(sessionId)-Final.m4a")
-			var myaudioplayer: AVAudioPlayer?
-			/*assetExport.exportAsynchronously(completionHandler:{
-			print("starting async callback")
-			myaudioplayer = try AVAudioPlayer(contentsOf: self.getDirectory().appendingPathComponent("\(self.sessionId)-Final.wav"))
-			myaudioplayer!.play()
-			print("finished async callback")
-				} as! () -> Void)*/
-			assetExport.exportAsynchronously(completionHandler:{self.handleFinishExport()})
-		}
-	}
-	
 	func handleFinishExport() {
 		print("starting async callback")
 		do
@@ -248,6 +225,122 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, UITableViewDele
 			displayAlert(title: "Oops!", message: "Playback Failed for Exported Song")
 		}
 		print("finished async callback")
+	}
+	
+	var fileDestinationUrl: URL?
+	
+	func playmerge()
+	{
+		let composition = AVMutableComposition()
+		//let compositionAudioTrack1:AVMutableCompositionTrack = composition.addMutableTrack(withMediaType: AVMediaType.audio, preferredTrackID: CMPersistentTrackID())!
+		//let compositionAudioTrack2:AVMutableCompositionTrack = composition.addMutableTrack(withMediaType: AVMediaType.audio, preferredTrackID: CMPersistentTrackID())!
+		
+		let documentDirectoryURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first! as NSURL
+		self.fileDestinationUrl = getDirectory().appendingPathComponent("\(sessionId)-Final.wav")
+		
+		let filemanager = FileManager.default
+		if (!filemanager.fileExists(atPath: self.fileDestinationUrl!.path))
+		{
+			do
+			{
+				try filemanager.removeItem(at: self.fileDestinationUrl!)
+			}
+			catch let error as NSError
+			{
+				NSLog("Error: \(error)")
+			}
+			
+		}
+		else
+		{
+			do
+			{
+				try filemanager.removeItem(at: self.fileDestinationUrl!)
+			}
+			catch let error as NSError
+			{
+				NSLog("Error: \(error)")
+			}
+			
+		}
+		
+		/*
+		let url1 = audio1
+		let url2 = audio2
+		
+		let avAsset1 = AVURLAsset(url: url1 as URL, options: nil)
+		let avAsset2 = AVURLAsset(url: url2 as URL, options: nil)
+		
+		var tracks1 = avAsset1.tracks(withMediaType: AVMediaType.audio)
+		var tracks2 = avAsset2.tracks(withMediaType: AVMediaType.audio)
+		
+		let assetTrack1:AVAssetTrack = tracks1[0]
+		let assetTrack2:AVAssetTrack = tracks2[0]
+		
+		let duration1: CMTime = assetTrack1.timeRange.duration
+		let duration2: CMTime = assetTrack2.timeRange.duration
+		
+		let timeRange1 = CMTimeRangeMake(kCMTimeZero, duration1)
+		let timeRange2 = CMTimeRangeMake(kCMTimeZero, duration2)
+		*/
+		var compList: [AVMutableCompositionTrack] = []
+		do
+		{
+			//try compositionAudioTrack1.insertTimeRange(timeRange1, of: assetTrack1, at: kCMTimeZero)
+			//try compositionAudioTrack2.insertTimeRange(timeRange2, of: assetTrack2, at: kCMTimeZero)
+			for t in model.trackList {
+				let compositionAudioTrack:AVMutableCompositionTrack = composition.addMutableTrack(withMediaType: AVMediaType.audio, preferredTrackID: CMPersistentTrackID())!
+				let url = t.path
+				let avAsset = AVURLAsset(url: url, options: nil)
+				var tracks = avAsset.tracks(withMediaType: AVMediaType.audio)
+				let assetTrack:AVAssetTrack = tracks[0]
+				let duration:CMTime = assetTrack.timeRange.duration
+				let timeRange = CMTimeRangeMake(kCMTimeZero, duration)
+				
+				try compositionAudioTrack.insertTimeRange(timeRange, of: assetTrack, at: kCMTimeZero)
+				compList.append(compositionAudioTrack)
+			}
+		}
+		catch
+		{
+			print(error)
+		}
+		
+		let assetExport = AVAssetExportSession(asset: composition, presetName: AVAssetExportPresetAppleM4A)
+		assetExport?.outputFileType = AVFileType.m4a
+		assetExport?.outputURL = fileDestinationUrl!
+		assetExport?.exportAsynchronously(completionHandler:
+			{
+				switch assetExport!.status
+				{
+				case AVAssetExportSessionStatus.failed:
+					print("failed \(assetExport?.error)")
+				case AVAssetExportSessionStatus.cancelled:
+					print("cancelled \(assetExport?.error)")
+				case AVAssetExportSessionStatus.unknown:
+					print("unknown\(assetExport?.error)")
+				case AVAssetExportSessionStatus.waiting:
+					print("waiting\(assetExport?.error)")
+				case AVAssetExportSessionStatus.exporting:
+					print("exporting\(assetExport?.error)")
+				default:
+					print("complete")
+				}
+				
+				do
+				{
+					self.audioPlayer = try AVAudioPlayer(contentsOf: self.fileDestinationUrl!)
+					self.audioPlayer?.numberOfLoops = 0
+					self.audioPlayer?.prepareToPlay()
+					self.audioPlayer?.volume = 1.0
+					self.audioPlayer?.play()
+					// self.audioPlayer?.delegate=self
+				}
+				catch let error as NSError
+				{
+					print(error)
+				}
+		})
 	}
 	
 }
